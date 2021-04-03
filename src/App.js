@@ -9,7 +9,7 @@ import "./App.css";
 function App() {
   const [word, setWord] = useState(Words);
   const [newWord, setNewWord] = useState(word[0]);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
   const [correctResults, setCorrectResults] = useState([]);
   const [wrongResults, setWrongResults] = useState([]);
   const [countCorrect, setCountCorrect] = useState(0);
@@ -17,9 +17,59 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [animation, setAnimation] = useState(null);
 
-  console.log(word.length);
   let randomWord = Math.floor(Math.random() * word.length);
 
+  const checkAnswer = () => {
+    console.log("Checking answer...");
+    if (inputValue.trim() === newWord) {
+      setCorrectResults((prevCorrect) => [...prevCorrect, newWord]);
+      setCountCorrect((prevCorrect) => prevCorrect + 1);
+      console.log("Correct Results: ", correctResults);
+      return;
+    }
+    setWrongResults((prevWrong) => {
+      console.log("Wrong Results: ", wrongResults);
+      return [...prevWrong, inputValue];
+    });
+  };
+
+  const handleInput = (e) => {
+    console.log("Handling input...");
+    if (e.charCode === 13 && inputValue.trim() !== "") {
+      checkAnswer();
+      setNewWord(word[randomWord]);
+      setInputValue("");
+    }
+  };
+
+  const handleStart = () => {
+    console.log("Starting...");
+    setDisabled(!disabled);
+    setCorrectResults([]);
+    setWrongResults([]);
+    setCountCorrect(0);
+    setInputValue("");
+  };
+
+  useEffect(() => {
+    if (time <= 30 && time !== 0 && disabled === false) {
+      setTimeout(() => setTime((prevTime) => prevTime - 1), 1000);
+    } else if (disabled) {
+      setTime(30);
+      setAnimation(null);
+    } else if (time === 0) {
+      setDisabled(true);
+    }
+
+    if (time <= 10) {
+      setAnimation("scaleNumber 2s infinite");
+    }
+  }, [disabled, time]);
+
+  useEffect(() => {
+    setNewWord(word[randomWord]);
+  }, []);
+  
   return (
     <div className="App">
       <Container>
@@ -30,6 +80,8 @@ function App() {
           disabled={disabled}
           time={time}
           animation={animation}
+          handleInput={handleInput}
+          handleStart={handleStart}
         />
       </Container>
       <Results

@@ -1,6 +1,7 @@
 import React from "react";
 
 const Results = ({ correctResults, wrongResults, countCorrect }) => {
+  console.log(correctResults, wrongResults);
   return (
     <div className="results">
       <div className="title">
@@ -8,24 +9,22 @@ const Results = ({ correctResults, wrongResults, countCorrect }) => {
       </div>
       <div className="resultsContainer">
         <div className="correctResults">
-          <p>
-            Correct Results:
-            {correctResults.map((word, index) => {
+          {correctResults.map((word, index) => {
+            return (
               <div key={index} className="row">
                 <p>{word}</p>
-              </div>;
-            })}
-          </p>
+              </div>
+            );
+          })}
         </div>
         <div className="wrongResults">
-          <p>
-            Wrong Results:
-            {wrongResults.map((word, index) => {
+          {wrongResults.map((word, index) => {
+            return (
               <div key={index} className="row">
                 <p>{word}</p>
-              </div>;
-            })}
-          </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
